@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+echo "---> PDFtk Buildpack"
+
+layersdir=$1
+
+pdftklayer="$layersdir"/pdftk
+mkdir -p "$pdftklayer"/bin
+
+echo "---> Downloading pdftk"
+cd "$pdftklayer"/bin
+pdftk_url=https://gitlab.com/api/v4/projects/5024297/packages/generic/pdftk-java/v3.3.2/pdftk
+wget -q -O pdftk "$pdftk_url"
+chmod +x pdftk
+
+# Write layer file, making pdftk available on launch
+echo -e '[types]\nlaunch = true' > "$layersdir/pdftk.toml"
+
+# Write layer file, making pdftk available on launch
+export PATH="$pdftklayer"/bin:$PATH
